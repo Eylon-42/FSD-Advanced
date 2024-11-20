@@ -15,7 +15,7 @@ GET http://localhost:3000/posts
 GET http://localhost:3000/posts/<post_id>
 
 ### Get Posts by Sender
-GET http://localhost:3000/posts/filter?sender=user123
+GET http://localhost:3000/posts/filter?sender=<sender>
 
 ### Update a Post
 PUT http://localhost:3000/posts/<post_id>
@@ -31,7 +31,7 @@ POST http://localhost:3000/comments
 Content-Type: application/json
 
 {
-    "postId": "2",
+    "postId": "<post_id>",
     "content": "Great post!",
     "sender": "user123"
 }
@@ -39,11 +39,11 @@ Content-Type: application/json
 ### Get All Comments
 GET http://localhost:3000/comments
 
-### Get Comments by Post
-GET http://localhost:3000/comments/2
+### Get Comments by PostId
+GET http://localhost:3000/comments/<post_id>
 
 ### Update a Comment
-PUT http://localhost:3000/comments/673def0b80408af943c7d26d
+PUT http://localhost:3000/comments/<comment_id>
 Content-Type: application/json
 
 {
@@ -51,4 +51,4 @@ Content-Type: application/json
 }
 
 ### Delete a Comment
-DELETE http://localhost:3000/comments/673def0b80408af943c7d26d
+DELETE http://localhost:3000/comments/<comment_id>

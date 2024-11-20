@@ -8,10 +8,6 @@ const generateAccessToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
 };
 
-const generateRefreshToken = (user) => {
-  return jwt.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-};
-
 // Register
 router.post('/register', async (req, res) => {
   try {
@@ -33,8 +29,8 @@ router.post('/login', async (req, res) => {
       return res.status(401).send('Invalid email or password');
     }
     const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-    res.json({ accessToken, refreshToken });
+    console.log(`{\n${accessToken} \n \n}`);
+    res.status(200).json({ message: 'Logged in successfully' });
   } catch (error) {
     res.status(400).send(error.message);
   }
@@ -42,9 +38,9 @@ router.post('/login', async (req, res) => {
 
 // Logout
 router.post('/logout', authMiddleware, (req, res) => {
-  // Handle logout logic (e.g., invalidate refresh token)
+  //TODO: Implement logout logic
   res.send('Logged out successfully');
-});
+}); 
 
 // Get User Profile
 router.get('/profile', authMiddleware, async (req, res) => {

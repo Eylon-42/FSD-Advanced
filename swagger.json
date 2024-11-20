@@ -1,264 +1,184 @@
 {
-    "openapi": "3.0.0",
-    "info": {
-      "title": "Post and Comment API",
-      "version": "1.0.0",
-      "description": "API documentation for managing posts and comments."
-    },
-    "paths": {
-      "/posts": {
-        "post": {
-          "summary": "Create a new post",
-          "tags": ["Posts"],
-          "requestBody": {
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "API Documentation",
+    "description": "API Documentation for the application"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/api/users/register": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Register a new user",
+        "description": "Register a new user with username, email, and password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User object",
             "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": { "type": "string" },
-                    "content": { "type": "string" },
-                    "sender": { "type": "string" }
-                  }
-                }
-              }
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              },
+              "required": ["username", "email", "password"]
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User registered successfully"
           },
-          "responses": {
-            "201": { "description": "Post created successfully" },
-            "400": { "description": "Invalid input" }
-          }
-        },
-        "get": {
-          "summary": "Get all posts or posts by sender",
-          "tags": ["Posts"],
-          "parameters": [
-            {
-              "in": "query",
-              "name": "sender",
-              "schema": { "type": "string" },
-              "description": "Filter posts by sender"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "A list of posts",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": { "$ref": "#/components/schemas/Post" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/posts/{id}": {
-        "get": {
-          "summary": "Get a post by ID",
-          "tags": ["Posts"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "schema": { "type": "string" },
-              "description": "Post ID"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Post retrieved successfully",
-              "content": {
-                "application/json": {
-                  "schema": { "$ref": "#/components/schemas/Post" }
-                }
-              }
-            },
-            "404": { "description": "Post not found" }
-          }
-        },
-        "put": {
-          "summary": "Update a post by ID",
-          "tags": ["Posts"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "schema": { "type": "string" },
-              "description": "Post ID"
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": { "type": "string" },
-                    "content": { "type": "string" },
-                    "sender": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": { "description": "Post updated successfully" },
-            "400": { "description": "Invalid input" },
-            "404": { "description": "Post not found" }
-          }
-        }
-      },
-      "/comments": {
-        "post": {
-          "summary": "Create a new comment",
-          "tags": ["Comments"],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "postId": { "type": "string" },
-                    "content": { "type": "string" },
-                    "sender": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": { "description": "Comment created successfully" },
-            "400": { "description": "Invalid input" }
-          }
-        },
-        "get": {
-          "summary": "Get all comments",
-          "tags": ["Comments"],
-          "responses": {
-            "200": {
-              "description": "A list of comments",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": { "$ref": "#/components/schemas/Comment" }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/comments/{postId}": {
-        "get": {
-          "summary": "Get comments by post ID",
-          "tags": ["Comments"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "postId",
-              "required": true,
-              "schema": { "type": "string" },
-              "description": "Post ID"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Comments retrieved successfully",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": { "$ref": "#/components/schemas/Comment" }
-                  }
-                }
-              }
-            },
-            "404": { "description": "Post not found or no comments" }
-          }
-        }
-      },
-      "/comments/{id}": {
-        "put": {
-          "summary": "Update a comment by ID",
-          "tags": ["Comments"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "schema": { "type": "string" },
-              "description": "Comment ID"
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "content": { "type": "string" },
-                    "sender": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": { "description": "Comment updated successfully" },
-            "400": { "description": "Invalid input" },
-            "404": { "description": "Comment not found" }
-          }
-        },
-        "delete": {
-          "summary": "Delete a comment by ID",
-          "tags": ["Comments"],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "id",
-              "required": true,
-              "schema": { "type": "string" },
-              "description": "Comment ID"
-            }
-          ],
-          "responses": {
-            "200": { "description": "Comment deleted successfully" },
-            "404": { "description": "Comment not found" }
+          "400": {
+            "description": "Invalid input"
           }
         }
       }
     },
-    "components": {
-      "schemas": {
-        "Post": {
-          "type": "object",
-          "properties": {
-            "id": { "type": "string" },
-            "title": { "type": "string" },
-            "content": { "type": "string" },
-            "sender": { "type": "string" }
+    "/api/users/login": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Login a user",
+        "description": "Login a user with email and password",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User login object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              },
+              "required": ["email", "password"]
+            }
           }
-        },
-        "Comment": {
-          "type": "object",
-          "properties": {
-            "id": { "type": "string" },
-            "postId": { "type": "string" },
-            "content": { "type": "string" },
-            "sender": { "type": "string" }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accessToken": { "type": "string" }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid email or password"
+          }
+        }
+      }
+    },
+    "/api/users/profile": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user profile",
+        "description": "Get the profile of the authenticated user",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": { "type": "string" },
+                "email": { "type": "string" }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update user profile",
+        "description": "Update the profile of the authenticated user",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "User profile update object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": { "type": "string" },
+                "email": { "type": "string" },
+                "password": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile updated successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete user profile",
+        "description": "Delete the profile of the authenticated user",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User profile deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
     }
   }
-  
+}

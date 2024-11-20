@@ -1,15 +1,12 @@
 const express = require('express');
+const app = express();
+const connectDB = require('./src/config/database');
+const postRoutes = require('./src/routes/postRoutes');
+const commentRoutes = require('./src/routes/commentRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerDoc = require('./swagger.json');
-
-const app = express();
-
-const connectDB = require('./src/config/database');
-
-const postRoutes = require('./src/routes/postRoutes');
-const commentRoutes = require('./src/routes/commentRoutes');
-const authRoutes = require('./src/routes/authRoutes');
 
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
@@ -24,8 +21,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 // Routes
 app.use('/posts', postRoutes);
 app.use('/comments', commentRoutes);
-app.use('/api/auth', authRoutes);
-
+app.use('/api/users', userRoutes);
 
 
 // Database Connection

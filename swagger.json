@@ -84,6 +84,28 @@
         }
       }
     },
+    "/api/users/logout": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Logout a user",
+        "description": "Logout a user",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User logged out successfully"
+          }
+        }
+      }
+    },
     "/api/users/profile": {
       "get": {
         "tags": ["Users"],

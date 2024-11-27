@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const authMiddleware = require('../middleware/auth');
 const router = express.Router();
+const { addToken } = require('../store/tokenStore');
 
 const generateAccessToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
@@ -38,7 +39,8 @@ router.post('/login', async (req, res) => {
 
 // Logout
 router.post('/logout', authMiddleware, (req, res) => {
-  //TODO: Implement logout logic
+  const token = req.headers['authorization'];
+  addToken(token)
   res.send('Logged out successfully');
 }); 
 

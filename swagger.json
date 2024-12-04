@@ -11,6 +11,327 @@
     "http"
   ],
   "paths": {
+    "/posts": {
+      "post": {
+        "tags": ["Posts"],
+        "summary": "Create a new post",
+        "description": "Create a new post with title, content, and sender",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Post object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "content": { "type": "string" },
+                "sender": { "type": "string" }
+              },
+              "required": ["title", "content", "sender"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Post created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get all posts",
+        "description": "Retrieve all posts",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "sender",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Filter posts by sender"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Posts retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string" },
+                  "content": { "type": "string" },
+                  "sender": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{id}": {
+      "get": {
+        "tags": ["Posts"],
+        "summary": "Get post by ID",
+        "description": "Retrieve a post by its ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the post to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "content": { "type": "string" },
+                "sender": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Posts"],
+        "summary": "Update post by ID",
+        "description": "Update a post by its ID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the post to update"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Post update object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "content": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post updated successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Posts"],
+        "summary": "Delete post by ID",
+        "description": "Delete a post by its ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the post to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post deleted successfully"
+          },
+          "404": {
+            "description": "Post not found"
+          }
+        }
+      }
+    },
+    "/comments": {
+      "post": {
+        "tags": ["Comments"],
+        "summary": "Create a new comment",
+        "description": "Create a new comment with postId, content, and sender",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Comment object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "postId": { "type": "string" },
+                "content": { "type": "string" },
+                "sender": { "type": "string" }
+              },
+              "required": ["postId", "content", "sender"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Comment created successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get all comments",
+        "description": "Retrieve all comments",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Filter comments by postId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "postId": { "type": "string" },
+                  "content": { "type": "string" },
+                  "sender": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comments/{id}": {
+      "get": {
+        "tags": ["Comments"],
+        "summary": "Get comment by ID",
+        "description": "Retrieve a comment by its ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the comment to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment retrieved successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "postId": { "type": "string" },
+                "content": { "type": "string" },
+                "sender": { "type": "string" }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Comments"],
+        "summary": "Update comment by ID",
+        "description": "Update a comment by its ID",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the comment to update"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Comment update object",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "content": { "type": "string" }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment updated successfully"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Comments"],
+        "summary": "Delete comment by ID",
+        "description": "Delete a comment by its ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the comment to delete"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comment deleted successfully"
+          },
+          "404": {
+            "description": "Comment not found"
+          }
+        }
+      }
+    },
     "/api/users/register": {
       "post": {
         "tags": ["Users"],
@@ -74,7 +395,8 @@
             "schema": {
               "type": "object",
               "properties": {
-                "accessToken": { "type": "string" }
+                "accessToken": { "type": "string" },
+                "refreshToken": { "type": "string" }
               }
             }
           },
@@ -160,8 +482,7 @@
               "type": "object",
               "properties": {
                 "username": { "type": "string" },
-                "email": { "type": "string" },
-                "password": { "type": "string" }
+                "email": { "type": "string" }
               }
             }
           }
@@ -185,7 +506,7 @@
         "produces": ["application/json"],
         "parameters": [
           {
-            "name": "Authorization",
+            "name": "authorization",
             "in": "header",
             "required": true,
             "type": "string",

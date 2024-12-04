@@ -1,11 +1,16 @@
 const express = require('express');
-const { createComment, getAllComments, getCommentsByPost, updateComment, deleteComment } = require('../controllers/commentController');
+const { createComment, getAllComments,getCommentById, getCommentsByPost, updateComment, deleteComment } = require('../controllers/commentController');
 
 const router = express.Router();
 
 router.post('/', createComment);
-router.get('/', getAllComments);
-router.get('/:postId', getCommentsByPost);
+router.get('/', (req, res, next) => {
+    if(req.query.sender){
+        return getCommentsByPost(req, res, next)
+    }
+    return getAllComments(req, res, next)
+});
+router.get('/:id', getCommentById)
 router.put('/:id', updateComment);
 router.delete('/:id', deleteComment);
 

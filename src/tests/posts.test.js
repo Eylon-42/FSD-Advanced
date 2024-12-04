@@ -3,7 +3,7 @@ const connectDB = require("../../server");
 const mongoose = require("mongoose");
 const PostSchema = require("../models/postModel");
 
-const { testPosts, failurePost } = require("./testPosts");
+const { testPosts, failurePost } = require("./testData/testPosts");
 
 let app;
 beforeAll(async () => {

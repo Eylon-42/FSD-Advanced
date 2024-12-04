@@ -1,8 +1,11 @@
 const Comment = require('../models/commentModel');
+const User = require('../models/userModel');
+
 
 exports.createComment = async (req, res) => {
     try {
-        const comment = await Comment.create(req.body);
+        const user = await User.findById(req.user.id);
+        const comment = await Comment.create({sender: user.username, ...req.body});
         res.status(201).json(comment);
     } catch (err) {
         res.status(400).json({ error: err.message });

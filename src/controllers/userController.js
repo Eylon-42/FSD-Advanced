@@ -25,7 +25,6 @@ exports.login = async (req, res) => {
         return res.status(401).send('Invalid email or password');
       }
       const accessToken = generateAccessToken(user);
-      console.log(`{\n${accessToken} \n \n}`);
       res.status(200).json({ message: 'Logged in successfully', token: accessToken });
     } catch (error) {
       res.status(400).send(error.message);

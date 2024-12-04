@@ -28,11 +28,17 @@
               "type": "object",
               "properties": {
                 "title": { "type": "string" },
-                "content": { "type": "string" },
-                "sender": { "type": "string" }
+                "content": { "type": "string" }
               },
               "required": ["title", "content", "sender"]
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -56,6 +62,13 @@
             "required": false,
             "type": "string",
             "description": "Filter posts by sender"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -89,6 +102,13 @@
             "required": true,
             "type": "string",
             "description": "ID of the post to retrieve"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -134,6 +154,13 @@
                 "content": { "type": "string" }
               }
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -160,6 +187,13 @@
             "required": true,
             "type": "string",
             "description": "ID of the post to delete"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -189,11 +223,17 @@
               "type": "object",
               "properties": {
                 "postId": { "type": "string" },
-                "content": { "type": "string" },
-                "sender": { "type": "string" }
+                "content": { "type": "string" }
               },
               "required": ["postId", "content", "sender"]
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -217,6 +257,13 @@
             "required": false,
             "type": "string",
             "description": "Filter comments by postId"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -250,6 +297,13 @@
             "required": true,
             "type": "string",
             "description": "ID of the comment to retrieve"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -294,6 +348,13 @@
                 "content": { "type": "string" }
               }
             }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {
@@ -320,6 +381,13 @@
             "required": true,
             "type": "string",
             "description": "ID of the comment to delete"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "description": "Bearer token"
           }
         ],
         "responses": {

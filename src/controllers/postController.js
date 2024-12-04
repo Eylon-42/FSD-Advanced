@@ -1,8 +1,10 @@
 const Post = require('../models/postModel');
+const User = require('../models/userModel');
 
 exports.createPost = async (req, res) => {
     try {
-        const post = await Post.create(req.body);
+        const user = await User.findById(req.user.id);
+        const post = await Post.create({sender: user.username, ...req.body});
         res.status(201).json(post);
     } catch (err) {
         res.status(400).json({ error: err.message });

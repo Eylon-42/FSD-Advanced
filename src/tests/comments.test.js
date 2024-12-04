@@ -3,14 +3,10 @@ const connectDB = require("../../server");
 const mongoose = require("mongoose");
 const CommentSchema = require("../models/commentModel");
 const PostSchema = require("../models/postModel")
+const { createUserToken } = require("./testUtils")
 
 const { testComments, failureComment, testPost, postUserCred, commentUserCred } = require("./testData/testComments");
 
-const createUserToken = async (app, userCred) =>{
-  await request(app).post("/api/users/register").send(userCred);
-  const loginResponse = await request(app).post("/api/users/login").send({email: userCred.email, password: userCred.password})
-  return loginResponse.body.token;
-}
 let commentToken;
 let app;
 beforeAll(async () => {

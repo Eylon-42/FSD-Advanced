@@ -2,6 +2,7 @@ const request = require("supertest");
 const connectDB = require("../../server");
 const mongoose = require("mongoose");
 const PostSchema = require("../models/postModel");
+const { createUserToken } = require("./testUtils")
 
 const { testPosts, failurePost } = require("./testData/testPosts");
 
@@ -15,9 +16,7 @@ let token;
 let app;
 beforeAll(async () => {
   app = await connectDB();
-  await request(app).post("/api/users/register").send(userCred);
-  const loginResponse = await request(app).post("/api/users/login").send({email: userCred.email, password: userCred.password})
-  token = loginResponse.body.token;
+  token = await createUserToken(app, userCred)
   await PostSchema.deleteMany();
 });
 

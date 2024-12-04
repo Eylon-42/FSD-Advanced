@@ -26,7 +26,7 @@ exports.login = async (req, res) => {
       }
       const accessToken = generateAccessToken(user);
       console.log(`{\n${accessToken} \n \n}`);
-      res.status(200).json({ message: 'Logged in successfully' });
+      res.status(200).json({ message: 'Logged in successfully', token: accessToken });
     } catch (error) {
       res.status(400).send(error.message);
     }
@@ -62,6 +62,8 @@ exports.updateProfile = async (req, res) => {
 exports.deleteProfile = async (req, res) => {
     try {
       await User.findByIdAndDelete(req.user.id);
+      const token = req.headers['authorization'];
+      addToken(token)
       res.send('User deleted successfully');
     } catch (error) {
       res.status(400).send(error.message);

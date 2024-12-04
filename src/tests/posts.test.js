@@ -1,199 +1,76 @@
-const Post = require('../models/postModel');
-const { createPost, getAllPosts, getPostById, getPostsBySender, updatePost } = require('../controllers/postController');
+const request = require("supertest");
+const connectDB = require("../../server");
+const mongoose = require("mongoose");
+const PostSchema = require("../models/postModel");
 
-// Mocking Express response and request
-const mockResponse = () => {
-  const res = {};
-  res.status = jest.fn().mockReturnThis();
-  res.json = jest.fn().mockReturnThis();
-  res.send = jest.fn().mockReturnThis();
-  return res;
-};
+const { testPosts, failurePost } = require("./testData/testPosts");
 
-const mockRequest = (body = {}, params = {}, query = {}) => ({
-  body,
-  params,
-  query,
+let app;
+beforeAll(async () => {
+  app = await connectDB();
+  await PostSchema.deleteMany();
 });
 
-// Mock Post model
-jest.mock('../models/postModel');
+afterAll(() => {
+  mongoose.connection.close();
+});
 
-describe('Post Controller', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+describe("Posts Test", () => {
+  test("Test get all post empty", async () => {
+    const response = await request(app).get("/posts");
+    expect(response.statusCode).toBe(200);
+    expect(response.body.length).toBe(0);
   });
 
-  describe('createPost', () => {
-    it('should create a post successfully', async () => {
-      const req = mockRequest({ title: 'Test Post', content: 'Test Content', sender: 'User1' });
-      const res = mockResponse();
-
-      const mockPost = { id: '1', title: 'Test Post', content: 'Test Content', sender: 'User1' };
-      Post.create.mockResolvedValueOnce(mockPost);
-
-      await createPost(req, res);
-
-      expect(Post.create).toHaveBeenCalledWith(req.body);
-      expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(mockPost);
-    });
-
-    it('should return 400 if post creation fails', async () => {
-      const req = mockRequest({ title: 'Test Post', content: 'Test Content', sender: 'User1' });
-      const res = mockResponse();
-
-      Post.create.mockRejectedValueOnce(new Error('Creation error'));
-
-      await createPost(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Creation error' });
-    });
+  test("Test should create a post successfully", async () => {
+    for (let post of testPosts) {
+      const response = await request(app).post("/posts").send(post);
+      expect(response.statusCode).toBe(201);
+      expect(response.body.title).toBe(post.title);
+      expect(response.body.content).toBe(post.content);
+      expect(response.body.sender).toBe(post.sender);
+      post._id = response.body._id;
+    }
   });
 
-  describe('getAllPosts', () => {
-    it('should retrieve all posts successfully', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
+  test('Test should return 400 if post creation fails', async () => {
+    const response = await request(app).post("/posts").send(failurePost)
+    expect(response.statusCode).toBe(400)
+  })
 
-      const mockPosts = [
-        { id: '1', title: 'Post 1', content: 'Content 1' },
-        { id: '2', title: 'Post 2', content: 'Content 2' },
-      ];
-      Post.find.mockResolvedValueOnce(mockPosts);
-
-      await getAllPosts(req, res);
-
-      expect(Post.find).toHaveBeenCalled();
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockPosts);
-    });
-
-    it('should return 500 if fetching posts fails', async () => {
-      const req = mockRequest();
-      const res = mockResponse();
-
-      Post.find.mockRejectedValueOnce(new Error('Fetch error'));
-
-      await getAllPosts(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Fetch error' });
-    });
+  test("Test should retrieve all posts successfully", async () => {
+    const response = await request(app).get("/posts");
+    expect(response.statusCode).toBe(200);
+    expect(response.body.length).toBe(testPosts.length);
   });
 
-  describe('getPostById', () => {
-    it('should retrieve a post by ID successfully', async () => {
-      const req = mockRequest({}, { id: '1' });
-      const res = mockResponse();
-
-      const mockPost = { id: '1', title: 'Test Post', content: 'Test Content' };
-      Post.findById.mockResolvedValueOnce(mockPost);
-
-      await getPostById(req, res);
-
-      expect(Post.findById).toHaveBeenCalledWith('1');
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockPost);
-    });
-
-    it('should return 404 if post is not found', async () => {
-      const req = mockRequest({}, { id: '1' });
-      const res = mockResponse();
-
-      Post.findById.mockResolvedValueOnce(null);
-
-      await getPostById(req, res);
-
-      expect(Post.findById).toHaveBeenCalledWith('1');
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Post not found' });
-    });
-
-    it('should return 500 if fetching post by ID fails', async () => {
-      const req = mockRequest({}, { id: '1' });
-      const res = mockResponse();
-
-      Post.findById.mockRejectedValueOnce(new Error('Fetch error'));
-
-      await getPostById(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Fetch error' });
-    });
+  test("Test should retrieve a post by ID successfully", async () => {
+    const response = await request(app).get("/posts/" + testPosts[0]._id);
+    expect(response.statusCode).toBe(200);
+    expect(response.body._id).toBe(testPosts[0]._id);
   });
 
-  describe('getPostsBySender', () => {
-    it('should retrieve posts by sender successfully', async () => {
-      const req = mockRequest({}, {}, { sender: 'User1' });
-      const res = mockResponse();
-
-      const mockPosts = [
-        { id: '1', title: 'Post 1', content: 'Content 1', sender: 'User1' },
-      ];
-      Post.find.mockResolvedValueOnce(mockPosts);
-
-      await getPostsBySender(req, res);
-
-      expect(Post.find).toHaveBeenCalledWith({ sender: 'User1' });
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockPosts);
-    });
-
-    it('should return 500 if fetching posts by sender fails', async () => {
-      const req = mockRequest({}, {}, { sender: 'User1' });
-      const res = mockResponse();
-
-      Post.find.mockRejectedValueOnce(new Error('Fetch error'));
-
-      await getPostsBySender(req, res);
-
-      expect(Post.find).toHaveBeenCalledWith({ sender: 'User1' });
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Fetch error' });
-    });
+  test("Test filter post by sender", async () => {
+    const response = await request(app).get(
+      "/posts?sender=" + testPosts[0].sender
+    );
+    expect(response.statusCode).toBe(200);
+    expect(response.body.length).toBe(1);
   });
 
-  describe('updatePost', () => {
-    it('should update a post successfully', async () => {
-      const req = mockRequest({ title: 'Updated Post' }, { id: '1' });
-      const res = mockResponse();
+  test("Test Delete post", async () => {
+    const response = await request(app).delete("/posts/" + testPosts[0]._id);
+    expect(response.statusCode).toBe(200);
 
-      const updatedPost = { id: '1', title: 'Updated Post', content: 'Updated Content' };
-      Post.findByIdAndUpdate.mockResolvedValueOnce(updatedPost);
+    const responseGet = await request(app).get("/posts/" + testPosts[0]._id);
+    expect(responseGet.statusCode).toBe(404);
+  });
 
-      await updatePost(req, res);
-
-      expect(Post.findByIdAndUpdate).toHaveBeenCalledWith('1', req.body, { new: true });
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(updatedPost);
+  test("Test create new post fail", async () => {
+    const response = await request(app).post("/posts").send({
+      title: "Test Post 1",
+      content: "Test Content 1",
     });
-
-    it('should return 404 if post to update is not found', async () => {
-      const req = mockRequest({ title: 'Updated Post' }, { id: '1' });
-      const res = mockResponse();
-
-      Post.findByIdAndUpdate.mockResolvedValueOnce(null);
-
-      await updatePost(req, res);
-
-      expect(Post.findByIdAndUpdate).toHaveBeenCalledWith('1', req.body, { new: true });
-      expect(res.status).toHaveBeenCalledWith(404);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Post not found' });
-    });
-
-    it('should return 400 if update fails', async () => {
-      const req = mockRequest({ title: 'Updated Post' }, { id: '1' });
-      const res = mockResponse();
-
-      Post.findByIdAndUpdate.mockRejectedValueOnce(new Error('Update error'));
-
-      await updatePost(req, res);
-
-      expect(Post.findByIdAndUpdate).toHaveBeenCalledWith('1', req.body, { new: true });
-      expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Update error' });
-    });
+    expect(response.statusCode).toBe(400);
   });
 });

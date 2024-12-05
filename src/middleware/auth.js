@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { isTokenBlacklisted } = require('../store/tokenStore');
 
-
 const authMiddleware = (req, res, next) => {
   const token = req.headers['authorization'];
   if (!token) return res.sendStatus(401);
@@ -11,7 +10,13 @@ const authMiddleware = (req, res, next) => {
   }
 
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+    if (err) {
+      if (err.name === 'TokenExpiredError') {
+        return res.status(401).send('Access token expired');
+      } else {
+        return res.sendStatus(403);
+      }
+    }
     req.user = user;
     next();
   });

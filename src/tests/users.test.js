@@ -160,6 +160,7 @@ describe("Users Test", () => {
   });
 
   test("Test should delete profile successfully", async () => {
+    clearTokens()
     // Log in to obtain fresh tokens
     const loginData = {
       email: testUsers[0].email,
@@ -175,12 +176,13 @@ describe("Users Test", () => {
   
     expect(accessToken).toBeDefined();
     expect(refreshToken).toBeDefined();
-  
+    
     // Proceed to delete profile
     const response = await request(app)
       .delete("/api/users/profile")
-      .set("authorization", `${accessToken}`)
+      .set("authorization", accessToken)
       .send({ refresh_token: refreshToken });
+    
     expect(response.statusCode).toBe(200);
     expect(response.text).toBe("User deleted successfully");  
   

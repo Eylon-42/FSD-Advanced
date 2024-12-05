@@ -83,7 +83,7 @@ describe("Users Test", () => {
     const updates = { username: "UpdatedUser" };
     const response = await request(app)
       .put("/api/users/profile")
-      .set("Authorization", `${token}`)
+      .set("Authorization", token)
       .send(updates);
     expect(response.statusCode).toBe(200);
     expect(response.body.username).toBe("UpdatedUser");

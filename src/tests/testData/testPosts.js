@@ -2,19 +2,16 @@ const testPosts = [
     {
         "title": "My First post",
         "content": "Hi my friend!",
-        "sender": "Adir"
     },
     {
         "title": "My Sec post",
         "content": "Hello everyone",
-        "sender": "Eylon"
     }
 ]
 
 const failurePost = {
-    "title": "My failure post",
-    "content": "It's going to fail.",
-    "owner": "Eylon"
+    "tit": "My failure post",
+    "con": "It's going to fail.",
 }
 
 module.exports = {testPosts, failurePost}

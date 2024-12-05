@@ -21,4 +21,16 @@ const failureComment = {
     "owner": "Adir"
 }
 
-module.exports = {testComments, failureComment, testPost}
+const postUserCred = {
+    username: "Adir",
+    email: "adir@mail.com",
+    password: "1234"
+  }
+  
+  const commentUserCred = {
+    username: "Eylon",
+    email: "eylon@mail.com",
+    password: "1234"
+  }
+
+module.exports = {testComments, failureComment, testPost, postUserCred, commentUserCred}

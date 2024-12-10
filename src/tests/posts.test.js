@@ -16,7 +16,7 @@ let token;
 let app;
 beforeAll(async () => {
   app = await connectDB();
-  token = await createUserToken(app, userCred)
+  token = await (await createUserToken(app, userCred)).token
   await PostSchema.deleteMany();
 });
 

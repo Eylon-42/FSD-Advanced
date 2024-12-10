@@ -11,8 +11,8 @@ let commentToken;
 let app;
 beforeAll(async () => {
   app = await connectDB();
-  commentToken = await createUserToken(app, commentUserCred);
-  const postToken = await createUserToken(app, postUserCred);
+  commentToken = await (await createUserToken(app, commentUserCred)).token;
+  const postToken = await (await createUserToken(app, postUserCred)).token;
   await CommentSchema.deleteMany();
   await PostSchema.deleteMany();
   await request(app).post("/posts").set("Authorization", postToken).send(testPost);
